@@ -1,0 +1,17 @@
+.notification {
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+}
+
+.success {
+  border: 2px solid green;
+  color: green;
+  background-color: gainsboro;
+}
+
+.error {
+  border: 2px solid red;
+  color: red;
+  background-color: gainsboro;
+}
