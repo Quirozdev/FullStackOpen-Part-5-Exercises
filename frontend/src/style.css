@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .notification {
   font-weight: bold;
   font-size: 20px;

@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -70,16 +70,13 @@ const App = () => {
     }, 5000);
   }
 
-  function handleAddNewBlog(event) {
-    event.preventDefault();
+  function handleAddNewBlog(blogObject) {
     blogService
-      .create({
-        title,
-        author,
-        url,
-      })
+      .create(blogObject)
       .then((savedBlog) => {
+        console.log(savedBlog);
         setBlogs(blogs.concat(savedBlog));
+        blogFormRef.current.toggleVisibility();
         setMessage({
           text: `a new blog ${savedBlog.title} by ${savedBlog.author} added`,
           type: 'success',
@@ -87,9 +84,6 @@ const App = () => {
         setTimeout(() => {
           setMessage(null);
         }, 5000);
-        setTitle('');
-        setAuthor('');
-        setUrl('');
       })
       .catch((error) => {
         console.log(error);
@@ -108,15 +102,9 @@ const App = () => {
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>Log out</button>
-          <NewBlogForm
-            handleCreateNewBlog={handleAddNewBlog}
-            titleValue={title}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            authorValue={author}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            urlValue={url}
-            handleUrlChange={({ target }) => setUrl(target.value)}
-          />
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <NewBlogForm handleCreateNewBlog={handleAddNewBlog} />
+          </Togglable>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}

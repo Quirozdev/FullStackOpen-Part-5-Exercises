@@ -34,7 +34,12 @@ blogsRouter.post('/', userExtractor, async (req, res, next) => {
     req.user.blogs = req.user.blogs.concat(savedBlog._id);
     await req.user.save();
 
-    res.status(201).json(savedBlog);
+    res.status(201).json({
+      ...savedBlog.toJSON(),
+      user: {
+        username: req.user.username,
+      },
+    });
   } catch (error) {
     next(error);
   }
