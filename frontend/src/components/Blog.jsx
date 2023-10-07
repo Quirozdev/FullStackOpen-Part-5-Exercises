@@ -14,11 +14,14 @@ const Blog = ({ blog, handleLike, removable, handleBlogDeletion }) => {
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}
-      <button onClick={() => setShowFullDetails(!showFullDetails)}>
+      <button
+        className="toggle-btn"
+        onClick={() => setShowFullDetails(!showFullDetails)}
+      >
         {showFullDetails ? 'hide' : 'view'}
       </button>
       {showFullDetails && (
-        <>
+        <div className="togglable-content">
           <a
             href={blog.url}
             target="_blank"
@@ -29,7 +32,9 @@ const Blog = ({ blog, handleLike, removable, handleBlogDeletion }) => {
           </a>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <p style={{ margin: 2 }}>likes {blog.likes}</p>
-            <button onClick={() => handleLike(blog)}>like</button>
+            <button className="like-btn" onClick={() => handleLike(blog)}>
+              like
+            </button>
           </div>
           <p style={{ margin: 2 }}>{blog.user.username}</p>
           {removable && (
@@ -40,7 +45,7 @@ const Blog = ({ blog, handleLike, removable, handleBlogDeletion }) => {
               Remove
             </button>
           )}
-        </>
+        </div>
       )}
     </div>
   );

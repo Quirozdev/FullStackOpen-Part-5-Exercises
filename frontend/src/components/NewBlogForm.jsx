@@ -47,7 +47,9 @@ const NewBlogForm = ({ handleCreateNewBlog }) => {
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">Create</button>
+      <button className="create-blog-btn" type="submit">
+        Create
+      </button>
     </form>
   );
 };
