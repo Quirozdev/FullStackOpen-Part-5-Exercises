@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike, removable, handleBlogDeletion }) => {
   const [showFullDetails, setShowFullDetails] = useState(false);
 
   const blogStyle = {
@@ -19,14 +19,27 @@ const Blog = ({ blog }) => {
       </button>
       {showFullDetails && (
         <>
-          <a href={blog.url} target="_blank" style={{ display: 'block' }}>
+          <a
+            href={blog.url}
+            target="_blank"
+            rel="noreferrer"
+            style={{ display: 'block' }}
+          >
             {blog.url}
           </a>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <p style={{ margin: 2 }}>likes {blog.likes}</p>
-            <button>like</button>
+            <button onClick={() => handleLike(blog)}>like</button>
           </div>
           <p style={{ margin: 2 }}>{blog.user.username}</p>
+          {removable && (
+            <button
+              className="remove-btn"
+              onClick={() => handleBlogDeletion(blog)}
+            >
+              Remove
+            </button>
+          )}
         </>
       )}
     </div>

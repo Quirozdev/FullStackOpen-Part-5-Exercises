@@ -86,13 +86,73 @@ const App = () => {
         }, 5000);
       })
       .catch((error) => {
-        console.log(error);
         setMessage({ text: error.response.data.error, type: 'error' });
         setTimeout(() => {
           setMessage(null);
         }, 5000);
       });
   }
+
+  function handleLike(blog) {
+    blogService
+      .likeBlog(blog)
+      .then((updatedBlog) => {
+        setMessage({
+          text: `Blog ${blog.title} liked`,
+          type: 'success',
+        });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+        const newBlogs = blogs.map((blog) => {
+          if (blog.id !== updatedBlog.id) {
+            return blog;
+          }
+          return updatedBlog;
+        });
+        setBlogs(newBlogs);
+      })
+      .catch((error) => {
+        setMessage({ text: error.response.data.error, type: 'error' });
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      });
+  }
+
+  function handleBlogDeletion(blogToDelete) {
+    if (
+      window.confirm(
+        `Remove blog ${blogToDelete.title} by ${blogToDelete.author}`
+      )
+    ) {
+      blogService
+        .deleteBlog(blogToDelete.id)
+        .then(() => {
+          setMessage({
+            text: `${blogToDelete.title} by ${blogToDelete.author} deleted`,
+            type: 'success',
+          });
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+          const blogsAfterDeletion = blogs.filter((blog) => {
+            return blog.id !== blogToDelete.id;
+          });
+          setBlogs(blogsAfterDeletion);
+        })
+        .catch((error) => {
+          setMessage({ text: error.response.data.error, type: 'error' });
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        });
+    }
+  }
+
+  const blogsSortedByLikes = [...blogs].sort((a, b) => {
+    return b.likes - a.likes;
+  });
 
   return (
     <div>
@@ -105,8 +165,14 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <NewBlogForm handleCreateNewBlog={handleAddNewBlog} />
           </Togglable>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+          {blogsSortedByLikes.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+              removable={user.username === blog.user.username}
+              handleBlogDeletion={handleBlogDeletion}
+            />
           ))}
         </div>
       ) : (

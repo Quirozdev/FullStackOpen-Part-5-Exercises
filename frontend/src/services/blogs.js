@@ -22,4 +22,33 @@ const create = (newBlog) => {
   return request.then((response) => response.data);
 };
 
-export default { getAll, setToken, create };
+const likeBlog = (blog) => {
+  const request = axios.put(
+    `${baseUrl}/${blog.id}`,
+    {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    },
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+  return request.then((response) => response.data);
+};
+
+const deleteBlog = (blogId) => {
+  const request = axios.delete(`${baseUrl}/${blogId}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+
+  return request;
+};
+
+export default { getAll, setToken, create, likeBlog, deleteBlog };

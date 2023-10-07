@@ -70,11 +70,11 @@ blogsRouter.put('/:id', userExtractor, async (req, res, next) => {
       return res.status(404).send({ error: 'blog not found' });
     }
 
-    if (savedBlog.user.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ error: 'you are not the owner of that blog!' });
-    }
+    // if (savedBlog.user.toString() !== req.user._id.toString()) {
+    //   return res
+    //     .status(403)
+    //     .json({ error: 'you are not the owner of that blog!' });
+    // }
 
     const { title, author, likes, url } = req.body;
 
@@ -91,7 +91,10 @@ blogsRouter.put('/:id', userExtractor, async (req, res, next) => {
       {
         new: true,
       }
-    );
+    ).populate('user', {
+      username: 1,
+      name: 1,
+    });
     res.json(updatedBlog);
   } catch (error) {
     next(error);
